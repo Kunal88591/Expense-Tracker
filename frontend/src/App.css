@@ -1,0 +1,262 @@
+/* ============================================================================
+   PROFESSIONAL DARK GRAY THEME - MODERN EXPENSE TRACKER
+   ============================================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============================================================================
+   COLOR PALETTE
+   ============================================================================ */
+:root {
+  /* Gray Background Tones */
+  --bg-primary: #0f0f0f;        /* Very dark gray (almost black) */
+  --bg-secondary: #1a1a1a;      /* Dark gray background */
+  --bg-tertiary: #242424;       /* Slightly lighter for cards */
+  --bg-hover: #2a2a2a;          /* Hover state for cards */
+
+  /* Text Colors */
+  --text-primary: #f0f0f0;      /* Near-white for primary text */
+  --text-secondary: #a8a8a8;    /* Muted gray for secondary text */
+  --text-muted: #707070;        /* Even more muted for hints */
+
+  /* Borders & Dividers */
+  --border-color: #353535;      /* Subtle gray borders */
+  --border-light: #2d2d2d;      /* Lighter borders */
+
+  /* Accent Colors */
+  --accent-primary: #6366f1;    /* Subtle indigo */
+  --accent-hover: #7c3aed;      /* Indigo hover (slightly warmer) */
+  --accent-light: #818cf8;      /* Lighter indigo */
+
+  /* Status Colors (muted) */
+  --error-bg: #39312f;          /* Dark red-gray background */
+  --error-text: #f87171;        /* Muted red */
+  --success-bg: #2d3d2a;        /* Dark green-gray background */
+  --success-text: #86efac;      /* Muted green */
+  --warning-bg: #3d3527;        /* Dark orange-gray background */
+  --warning-text: #fbbf24;      /* Muted amber */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ============================================================================
+   APP STRUCTURE
+   ============================================================================ */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}
+
+.app-header {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 40px 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.app-header p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.app-main {
+  flex: 1;
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+}
+
+.form-section,
+.expenses-section {
+  background-color: var(--bg-tertiary);
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  transition: border-color 0.2s ease;
+}
+
+.form-section:hover,
+.expenses-section:hover {
+  border-color: var(--border-light);
+}
+
+.form-section h2,
+.expenses-section h2 {
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 20px;
+}
+
+.total-display {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-hover) 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 10px;
+  display: flex;
+  gap: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.total-label {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.total-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* ============================================================================
+   ALERTS
+   ============================================================================ */
+
+.alert {
+  padding: 16px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border-left: 3px solid transparent;
+  animation: slideIn 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-left-color: #ef4444;
+}
+
+.alert-success {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border-left-color: #22c55e;
+}
+
+.alert-warning {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  border-left-color: #f59e0b;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+   LOADING & EMPTY STATES
+   ============================================================================ */
+
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* ============================================================================
+   FOOTER
+   ============================================================================ */
+
+.app-footer {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 24px 20px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 40px;
+  font-size: 0.9rem;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .total-display {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .app-main {
+    padding: 24px 16px;
+  }
+
+  .form-section,
+  .expenses-section {
+    padding: 24px;
+  }
+}

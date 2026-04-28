@@ -1,0 +1,28 @@
+{
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/build",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "api/expenses.js": {
+      "maxDuration": 30
+    },
+    "api/expenses/[id].js": {
+      "maxDuration": 30
+    },
+    "api/expenses/categories.js": {
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
