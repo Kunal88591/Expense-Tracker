@@ -17,7 +17,13 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const API_URL = process.env.REACT_APP_API_URL || (
+    process.env.NODE_ENV === 'development' ? 'http://localhost:5000/api' : ''
+  );
+
+  if (!API_URL) {
+    throw new Error('REACT_APP_API_URL is required for production builds');
+  }
 
   // Check if user is logged in on mount
   useEffect(() => {
