@@ -7,12 +7,12 @@ const API_URL = process.env.REACT_APP_API_URL || (
   process.env.NODE_ENV === 'development' ? 'http://localhost:5000/api' : ''
 );
 
-if (!API_URL) {
-  throw new Error('REACT_APP_API_URL is required for production builds');
+if (!API_URL && process.env.NODE_ENV === 'production') {
+  console.error('⚠️ REACT_APP_API_URL is not set. Set it in Vercel environment variables.');
 }
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_URL || 'http://localhost:5000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
