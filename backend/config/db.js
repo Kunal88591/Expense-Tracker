@@ -7,8 +7,13 @@ const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI;
     let connectionUri = mongoUri;
+    const isProduction = process.env.NODE_ENV === 'production';
 
-    if (!mongoUri) {
+    if (!mongoUri && isProduction) {
+      throw new Error('MONGODB_URI is required in production');
+    }
+
+    if (!mongoUri && !isProduction) {
       // Local-dev fallback so the API can run even if Atlas credentials are not configured yet.
       memoryServer = await MongoMemoryServer.create();
       connectionUri = memoryServer.getUri();

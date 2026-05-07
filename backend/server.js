@@ -8,7 +8,11 @@ import expenseRoutes from './routes/expenses.js';
 // Load environment variables
 dotenv.config();
 
-if (!process.env.JWT_SECRET) {
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET is required in production');
+}
+
+if (!process.env.JWT_SECRET && process.env.NODE_ENV !== 'production') {
   process.env.JWT_SECRET = 'dev-only-fallback-secret-change-in-production';
   console.warn('JWT_SECRET not set. Using development fallback secret.');
 }

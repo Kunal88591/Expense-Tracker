@@ -3,7 +3,13 @@ import axios from 'axios';
 /**
  * API service for backend server
  */
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || (
+  process.env.NODE_ENV === 'development' ? 'http://localhost:5000/api' : ''
+);
+
+if (!API_URL) {
+  throw new Error('REACT_APP_API_URL is required for production builds');
+}
 
 const api = axios.create({
   baseURL: API_URL,
