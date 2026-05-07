@@ -160,49 +160,4 @@ function ExpenseForm({ onAddExpense, categories }) {
 }
 
 export default ExpenseForm;
-          ))}
-        </select>
-        {fieldErrors.category && <span className="error-text">{fieldErrors.category}</span>}
-      </div>
 
-      <div className="form-group">
-        <label htmlFor="description">Description</label>
-        <input
-          type="text"
-          id="description"
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="What did you spend on?"
-          disabled={isSubmitting}
-          className={fieldErrors.description ? 'field-error' : ''}
-        />
-        {fieldErrors.description && <span className="error-text">{fieldErrors.description}</span>}
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="date">Date</label>
-        <input
-          type="date"
-          id="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          className={fieldErrors.date ? 'field-error' : ''}
-        />
-        {fieldErrors.date && <span className="error-text">{fieldErrors.date}</span>}
-      </div>
-
-      <button
-        type="submit"
-        className="submit-btn"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? 'Adding...' : 'Add Expense'}
-      </button>
-    </form>
-  );
-}
-
-export default ExpenseForm;
