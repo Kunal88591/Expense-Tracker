@@ -1,63 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import ExpenseForm from './components/ExpenseForm';
-import ExpenseList from './components/ExpenseList';
-import FilterSortBar from './components/FilterSortBar';
-import { expenseService } from './api';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
+import './index.css';
 
 function App() {
-  const [expenses, setExpenses] = useState([]);
-  const [total, setTotal] = useState('0.00');
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [sortOrder, setSortOrder] = useState('date_desc');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
+  return (
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
+  );
+}
 
-  // Standard expense categories
-  const defaultCategories = [
-    'Food & Dining',
-    'Transport',
-    'Shopping',
-    'Entertainment',
-    'Utilities',
-    'Healthcare',
-    'Education',
-    'Other'
-  ];
-
-  // Fetch expenses
-  const fetchExpenses = async (category = null, sort = 'date_desc') => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await expenseService.getExpenses(category, sort);
-      setExpenses(response.data.expenses || []);
-      setTotal(response.data.total || '0.00');
-    } catch (err) {
-      setError('Failed to fetch expenses. Please try again.');
-      console.error('Error fetching expenses:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Initial load
-  useEffect(() => {
-    fetchExpenses(selectedCategory, sortOrder);
-  }, []);
-
-  // Handle expense creation
-  const handleAddExpense = async (expenseData) => {
-    try {
-      setError(null);
-      await expenseService.createExpense(expenseData);
-      setSuccessMessage('Expense added successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
-      
-      // Refresh expenses
-      await fetchExpenses(selectedCategory, sortOrder);
-    } catch (err) {
+export default App;
       if (err.response?.status === 400) {
         setError('Invalid input. Please check your data.');
       } else {

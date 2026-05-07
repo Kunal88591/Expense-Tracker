@@ -1,12 +1,20 @@
 {
   "name": "expense-tracker-frontend",
-  "version": "1.0.0",
-  "description": "Personal finance expense tracker UI",
+  "version": "2.0.0",
+  "description": "Full-stack expense tracker with authentication",
   "private": true,
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
     "axios": "^1.4.0"
+  },
+  "devDependencies": {
+    "react-scripts": "5.0.1",
+    "tailwindcss": "^3.3.6",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16"
   },
   "scripts": {
     "start": "react-scripts start",

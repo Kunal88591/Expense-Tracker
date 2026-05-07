@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import '../styles/ExpenseForm.css';
 
-function ExpenseForm({ onAddExpense }) {
+function ExpenseForm({ onAddExpense, categories }) {
   const [formData, setFormData] = useState({
     amount: '',
     category: '',
@@ -10,17 +9,6 @@ function ExpenseForm({ onAddExpense }) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
-
-  const categories = [
-    'Food & Dining',
-    'Transport',
-    'Shopping',
-    'Entertainment',
-    'Utilities',
-    'Healthcare',
-    'Education',
-    'Other'
-  ];
 
   const validateForm = () => {
     const errors = {};
@@ -48,7 +36,6 @@ function ExpenseForm({ onAddExpense }) {
       ...prev,
       [name]: value
     }));
-    // Clear field error when user starts typing
     if (fieldErrors[name]) {
       setFieldErrors(prev => ({
         ...prev,
@@ -71,7 +58,6 @@ function ExpenseForm({ onAddExpense }) {
         amount: parseFloat(formData.amount)
       });
 
-      // Reset form on success
       setFormData({
         amount: '',
         category: '',
@@ -87,37 +73,93 @@ function ExpenseForm({ onAddExpense }) {
   };
 
   return (
-    <form className="expense-form" onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label htmlFor="amount">Amount (₹)</label>
-        <input
-          type="number"
-          id="amount"
-          name="amount"
-          value={formData.amount}
-          onChange={handleChange}
-          placeholder="0.00"
-          step="0.01"
-          min="0"
-          disabled={isSubmitting}
-          className={fieldErrors.amount ? 'field-error' : ''}
-        />
-        {fieldErrors.amount && <span className="error-text">{fieldErrors.amount}</span>}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
+            Amount (₹) *
+          </label>
+          <input
+            type="number"
+            id="amount"
+            name="amount"
+            value={formData.amount}
+            onChange={handleChange}
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+            disabled={isSubmitting}
+            className={`input-field ${fieldErrors.amount ? 'border-red-500' : ''}`}
+          />
+          {fieldErrors.amount && <span className="error-message">{fieldErrors.amount}</span>}
+        </div>
+
+        <div>
+          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+            Category *
+          </label>
+          <select
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            className={`input-field ${fieldErrors.category ? 'border-red-500' : ''}`}
+          >
+            <option value="">Select a category</option>
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+          {fieldErrors.category && <span className="error-message">{fieldErrors.category}</span>}
+        </div>
+
+        <div className="md:col-span-2">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            Description *
+          </label>
+          <input
+            type="text"
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="What did you spend on?"
+            disabled={isSubmitting}
+            className={`input-field ${fieldErrors.description ? 'border-red-500' : ''}`}
+          />
+          {fieldErrors.description && <span className="error-message">{fieldErrors.description}</span>}
+        </div>
+
+        <div>
+          <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+            Date *
+          </label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+            disabled={isSubmitting}
+            className={`input-field ${fieldErrors.date ? 'border-red-500' : ''}`}
+          />
+          {fieldErrors.date && <span className="error-message">{fieldErrors.date}</span>}
+        </div>
       </div>
 
-      <div className="form-group">
-        <label htmlFor="category">Category</label>
-        <select
-          id="category"
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          disabled={isSubmitting}
-          className={fieldErrors.category ? 'field-error' : ''}
-        >
-          <option value="">Select a category</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className={`btn-primary w-full md:w-auto ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+      >
+        {isSubmitting ? 'Adding...' : 'Add Expense'}
+      </button>
+    </form>
+  );
+}
+
+export default ExpenseForm;
           ))}
         </select>
         {fieldErrors.category && <span className="error-text">{fieldErrors.category}</span>}

@@ -1,10 +1,12 @@
 import axios from 'axios';
 
 /**
- * API service for Vercel Serverless Functions
- * All calls go to /api/expenses (relative URLs)
+ * API service for backend server
  */
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 const api = axios.create({
+  baseURL: API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -62,7 +64,7 @@ export const expenseService = {
     };
 
     return retryRequest(() =>
-      api.post('/api/expenses', payload)
+      api.post('/expenses', payload)
     );
   },
 
@@ -78,8 +80,29 @@ export const expenseService = {
     params.append('sort', sort);
 
     return retryRequest(() =>
-      api.get(`/api/expenses?${params.toString()}`)
+      api.get(`/expenses?${params.toString()}`)
     );
+  },
+
+  /**
+   * Get single expense by ID
+   */
+  getExpense: async (id) => {
+    return api.get(`/expenses/${id}`);
+  },
+
+  /**
+   * Delete expense by ID
+   */
+  deleteExpense: async (id) => {
+    return api.delete(`/expenses/${id}`);
+  },
+
+  /**
+   * Get dashboard summary
+   */
+  getDashboardSummary: async () => {
+    return api.get('/expenses/summary/dashboard');
   }
 };
 
