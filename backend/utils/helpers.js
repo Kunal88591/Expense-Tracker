@@ -2,8 +2,10 @@
  * Generate JWT token
  */
 export const generateToken = (userId) => {
+  const jwtSecret = process.env.JWT_SECRET || 'dev-only-fallback-secret-change-in-production';
+
   return {
-    token: jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    token: jwt.sign({ id: userId }, jwtSecret, {
       expiresIn: '30d'
     })
   };
