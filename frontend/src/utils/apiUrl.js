@@ -9,11 +9,7 @@ const getApiUrl = () => {
     return 'http://localhost:5000/api';
   }
 
-  if (typeof window !== 'undefined' && window.location?.origin) {
-    return `${window.location.origin}/api`;
-  }
-
-  return '/api';
+  return null;
 };
 
 export default getApiUrl;

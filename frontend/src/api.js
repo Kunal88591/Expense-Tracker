@@ -6,8 +6,12 @@ import getApiUrl from './utils/apiUrl';
  */
 const API_URL = getApiUrl();
 
+if (!API_URL && process.env.NODE_ENV === 'production') {
+  console.error('REACT_APP_API_URL is not configured. API requests are disabled until the backend URL is set.');
+}
+
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_URL || 'http://localhost:5000/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -50,6 +54,12 @@ const retryRequest = async (fn, maxRetries = 3, delayMs = 1000) => {
   }
 };
 
+const ensureApiUrl = () => {
+  if (!API_URL && process.env.NODE_ENV === 'production') {
+    throw new Error('REACT_APP_API_URL is not configured for production. Set it in Vercel environment variables.');
+  }
+};
+
 export const expenseService = {
   /**
    * Create a new expense with idempotency
@@ -58,6 +68,7 @@ export const expenseService = {
    * - Safe to retry without creating duplicate expenses
    */
   createExpense: async (expense) => {
+    ensureApiUrl();
     const idempotencyKey = expense.idempotency_key || `expense-${generateUUID()}`;
     const payload = {
       ...expense,
@@ -76,6 +87,7 @@ export const expenseService = {
    *   - sort: 'date_desc' (default) or 'date_asc'
    */
   getExpenses: async (category = null, sort = 'date_desc') => {
+    ensureApiUrl();
     const params = new URLSearchParams();
     if (category) params.append('category', category);
     params.append('sort', sort);
@@ -89,6 +101,7 @@ export const expenseService = {
    * Get single expense by ID
    */
   getExpense: async (id) => {
+    ensureApiUrl();
     return api.get(`/expenses/${id}`);
   },
 
@@ -96,6 +109,7 @@ export const expenseService = {
    * Delete expense by ID
    */
   deleteExpense: async (id) => {
+    ensureApiUrl();
     return api.delete(`/expenses/${id}`);
   },
 
@@ -103,6 +117,7 @@ export const expenseService = {
    * Get dashboard summary
    */
   getDashboardSummary: async () => {
+    ensureApiUrl();
     return api.get('/expenses/summary/dashboard');
   }
 };

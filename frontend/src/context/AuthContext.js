@@ -20,6 +20,12 @@ export const AuthProvider = ({ children }) => {
 
   const API_URL = getApiUrl();
 
+  const ensureApiUrl = () => {
+    if (!API_URL && process.env.NODE_ENV === 'production') {
+      throw new Error('REACT_APP_API_URL is not configured for production. Set it in Vercel environment variables.');
+    }
+  };
+
   // Check if user is logged in on mount
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
@@ -44,6 +50,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (name, email, password, confirmPassword) => {
     try {
+      ensureApiUrl();
       setError(null);
       const response = await axios.post(`${API_URL}/auth/signup`, {
         name,
@@ -69,6 +76,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      ensureApiUrl();
       setError(null);
       const response = await axios.post(`${API_URL}/auth/login`, {
         email,
