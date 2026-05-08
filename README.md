@@ -30,7 +30,7 @@ graph TD
     Client[Client Browser / User]
     Vercel[Vercel Edge Network]
     
-    subgraph Frontend [React Application]
+    subgraph Frontend ["React Application"]
         AuthCtx[AuthContext Provider]
         Axios[Axios Interceptors]
         
@@ -42,16 +42,16 @@ graph TD
         Pages --> Components
         Components --> AuthCtx
         AuthCtx --> Axios
-    End
+    end
     
-    subgraph Backend [Vercel Serverless (api/)]
+    subgraph Backend ["Vercel Serverless (api/)"]
         API[expenses.js Endpoint]
         Utils[utils/ storage & validation]
         DB[MongoDB Connection Pool]
         
         API --> Utils
         Utils --> DB
-    End
+    end
     
     MongoDB[(MongoDB Atlas)]
     
@@ -78,7 +78,7 @@ sequenceDiagram
     React App->>React App: Store JWT in localStorage
     React App->>User: Redirect to Dashboard using Framer Motion
     
-    note over User,React App: Subsequent Protected Requests
+    Note over User,React App: Subsequent Protected Requests
     User->>React App: Add Expense / View Dashboard
     React App->>Vercel API: Request to /api/expenses (Bearer JWT)
     Vercel API->>Vercel API: Verify JWT Signature
