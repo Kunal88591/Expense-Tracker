@@ -1,339 +1,180 @@
-# Expense Tracker - Production-Ready Full Stack Application
+# 🚀 Vault - Premium Expense Tracker (Fintech SaaS)
 
-A modern expense management application demonstrating professional full-stack development practices with JWT authentication, MongoDB integration, reliable money handling, and idempotent APIs.
+An ultra-modern, glassmorphic expense management application built with a premium fintech SaaS aesthetic (inspired by Stripe, Linear, and Revolut). Demonstrates professional full-stack development practices, secure JWT authentication, and highly scalable Vercel Serverless API integration.
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue)
 ![License](https://img.shields.io/badge/license-ISC-green)
+![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?logo=vercel)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?logo=framer&logoColor=white)
 
 ---
 
-## 🎯 Features
+## ✨ Features
 
-### Core Functionality
-- **User Authentication**: Secure signup and login with JWT tokens
-- **Expense Management**: Create, read, and delete expenses  
-- **Smart Filtering**: Filter expenses by category and sort by date
-- **Dashboard Summary**: Visualize total expenses and category breakdown
-- **User-Specific Data**: Each user has isolated access to their expenses
-
-### Engineering Excellence
-- **Idempotent APIs**: Safe to retry requests without creating duplicates via idempotency keys
-- **Proper Money Handling**: All amounts stored as integers (paise) to avoid floating-point errors
-- **Input Validation**: Comprehensive client and server-side validation
-- **Error Handling**: Consistent error responses with proper HTTP status codes
-- **Protected Routes**: Authentication middleware for API security
-- **Persistent Sessions**: Login state persisted in localStorage
-
-
-## 🏗️ Architecture
-
-### Technology Stack
-
-**Frontend:**
-- React 18 with React Router for navigation
-- Axios for HTTP requests with retry logic
-- Context API for authentication state management
-- Tailwind CSS for responsive modern UI
-
-**Backend:**
-- Node.js with Express.js server
-- JWT for authentication
-- bcrypt for password hashing
-- MongoDB with Mongoose ODM
-
-**Database:**
-- MongoDB Atlas (cloud database)
-- Mongoose for schema validation
-
-**Deployment:**
-- Frontend: Vercel
-- Backend: Render or Railway
-
-### Project Structure
-
-```
-├── backend/
-│   ├── config/
-│   │   └── db.js                # MongoDB connection
-│   ├── models/
-│   │   ├── User.js              # User schema with password hashing
-│   │   └── Expense.js           # Expense schema with validation
-│   ├── routes/
-│   │   ├── auth.js              # Authentication endpoints
-│   │   └── expenses.js          # Expense CRUD operations
-│   ├── middleware/
-│   │   └── auth.js              # JWT verification middleware
-│   ├── utils/
-│   │   └── helpers.js           # Validation and conversion utilities
-│   ├── package.json
-│   ├── .env.example
-│   └── server.js                # Express app initialization
-│
-├── frontend/
-│   │   └── index.html
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Login.js         # Login page
-│   │   │   ├── ExpenseForm.js   # Add expense form
-│   │   │   ├── ExpenseList.js   # Display expenses table
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── postcss.config.js
-│
-├── README.md
-└── vercel.json
-```
+- **Ultra-Modern UI/UX**: Dark-mode glassmorphism theme, gradient background blobs, glowing interactive cards, and fluid page transitions using Framer Motion.
+- **Serverless Backend**: Zero-config Vercel Serverless Functions (`api/` directory) for maximum scalability and low latency.
+- **Secure Authentication**: JWT-based auth flow intercepting Axios requests and securely persisting state.
+- **Database Integration**: Fully connected to a live MongoDB Atlas cloud database.
+- **Smart Dashboard**: Real-time category breakdowns, dynamic filtering, sorting algorithms, and auto-updating balance cards.
 
 ---
 
-## 📋 API Endpoints
+## 🏗️ Architecture & Data Flow
 
-### Authentication
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---|
-| POST | `/api/auth/signup` | Register new user | No |
-| POST | `/api/auth/login` | Login user | No |
-| GET | `/api/auth/me` | Get current user | Yes |
+### System Architecture
 
-### Expenses
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---|
-| GET | `/api/expenses` | Get user's expenses | Yes |
-| POST | `/api/expenses` | Create new expense | Yes |
-| GET | `/api/expenses/:id` | Get single expense | Yes |
-| DELETE | `/api/expenses/:id` | Delete expense | Yes |
-
----
-
-### 1. Backend Setup
-```bash
-cd backend
-npm install
-cp .env.example .env
-# JWT_SECRET=your-secret-key-min-32-characters
-# PORT=5000
-# FRONTEND_URL=http://localhost:3000
-npm run dev
+```mermaid
+graph TD
+    Client[Client Browser / User]
+    Vercel[Vercel Edge Network]
+    
+    subgraph Frontend [React Application]
+        AuthCtx[AuthContext Provider]
+        Axios[Axios Interceptors]
+        
+        UI[Glassmorphic UI]
+        Pages[Pages: Login, Signup, Dashboard]
+        Components[Components: ExpenseList, BalanceCards]
+        
+        UI --> Pages
+        Pages --> Components
+        Components --> AuthCtx
+        AuthCtx --> Axios
+    End
+    
+    subgraph Backend [Vercel Serverless (api/)]
+        API[expenses.js Endpoint]
+        Utils[utils/ storage & validation]
+        DB[MongoDB Connection Pool]
+        
+        API --> Utils
+        Utils --> DB
+    End
+    
+    MongoDB[(MongoDB Atlas)]
+    
+    Client -->|HTTPS Interactions| Frontend
+    Axios -->|JSON API + JWT Token| Vercel
+    Vercel --> API
+    DB --> MongoDB
 ```
 
-Backend runs on `http://localhost:5000`
+### Authentication & Request Flow
 
-### 2. Frontend Setup
-
-cd frontend
-npm install
-cp .env.example .env
-
-# REACT_APP_API_URL=http://localhost:5000/api
-
-npm start
-```
-
-Frontend opens at `http://localhost:3000`
-
----
-
-## 🔐 Authentication Flow
-
-1. **Signup**: User creates account with name, email, password
-   - Password hashed 10 times with bcrypt
-   - User stored in MongoDB
-   - JWT token generated (30 day expiry)
-   - Token and user saved to localStorage
-
-2. **Login**: User enters email and password
-   - Email lookup in database
-   - Password compared with hash
-   - JWT token generated and returned
-   - Token stored in localStorage
-
-3. **Protected Routes**: 
-   - Token included in Authorization header
-   - Server verifies JWT signature
-   - User ID extracted from payload
-   - All queries filtered by userId
-
-4. **Logout**: Clear token and user data from storage
-
----
-
-## 💰 Money Handling
-
-All amounts stored as **integers in paise** (1/100th of rupee):
-
-```javascript
-// Frontend sends
-{ "amount": 250.75 }
-
-// Backend converts
-const paise = Math.round(250.75 * 100) // = 25075
-
-// Stored as integer
-{ amount: 25075 }
-
-// Returned as decimal
-{ "amount": "250.75" }
-```
-
-This guarantees exact arithmetic without floating-point errors.
-
----
-
-## 🔄 Idempotency
-
-Prevents duplicate expense creation through idempotency keys:
-
-1. Client generates UUID: `expense-550e8400-e29b-41d4-a716-446655440000`
-2. Included in request payload
-3. Server checks for existing expense with same key
-4. If exists, returns cached response
-5. If new, creates and stores expense
-6. Safe to retry without creating duplicates
-
-Database maintains compound index on `(userId, idempotency_key)`.
-
----
-
-## 🧪 Testing with cURL
-
-### Create Account
-```bash
-curl -X POST http://localhost:5000/api/auth/signup \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "password123",
-    "confirmPassword": "password123"
-  }'
-```
-
-### Login
-```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "password": "password123"
-  }'
-# Returns: { token: "...", user: {...} }
-```
-
-### Create Expense
-```bash
-curl -X POST http://localhost:5000/api/expenses \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -d '{
-    "amount": 500.50,
-    "category": "Food & Dining",
-    "description": "Lunch",
-    "date": "2024-01-15",
-    "idempotency_key": "unique-key-123"
-  }'
-```
-
-### Get Expenses
-```bash
-curl -X GET "http://localhost:5000/api/expenses?sort=date_desc" \
-  -H "Authorization: Bearer YOUR_TOKEN"
+```mermaid
+sequenceDiagram
+    participant User
+    participant React App
+    participant Vercel API
+    participant MongoDB
+    
+    User->>React App: Enters Credentials (Login/Signup)
+    React App->>Vercel API: POST /api/auth
+    Vercel API->>MongoDB: Verify / Create User
+    MongoDB-->>Vercel API: User Document
+    Vercel API-->>React App: Returns JWT Token + User Data
+    React App->>React App: Store JWT in localStorage
+    React App->>User: Redirect to Dashboard using Framer Motion
+    
+    note over User,React App: Subsequent Protected Requests
+    User->>React App: Add Expense / View Dashboard
+    React App->>Vercel API: Request to /api/expenses (Bearer JWT)
+    Vercel API->>Vercel API: Verify JWT Signature
+    Vercel API->>MongoDB: Query/Save Expense for User
+    MongoDB-->>Vercel API: Success Response
+    Vercel API-->>React App: Returns Data
+    React App->>User: Update UI Seamlessly
 ```
 
 ---
 
-## 📦 Deployment
+## 📂 Project Structure
 
-### Frontend - Vercel
-
-1. Push code to GitHub
-2. Connect repository to Vercel
-3. Set env: `REACT_APP_API_URL=https://your-backend-url/api`
-4. Deploy automatically
-
-### Backend - Render
-
-1. Create Web Service on Render
-2. Connect GitHub repository
-3. Set environment variables:
-   - `MONGODB_URI`
-   - `JWT_SECRET`
-   - `FRONTEND_URL=https://your-frontend.vercel.app`
-4. Deploy
-
----
-
-## 🛡️ Security
-
-- **Password Hashing**: bcrypt with 10 salt rounds
-- **JWT Secrets**: Minimum 32 characters
-- **CORS**: Restricted to configured frontend domain
-- **Environment Variables**: Sensitive data in `.env`
-- **Input Validation**: Client and server validation
-- **Token Expiry**: 30 days
-
-**Before production:**
-- Use HTTPS everywhere
-- Review CORS origins
-- Set strong JWT secret
-- Enable MongoDB IP whitelist
+```text
+📦 Expense-Tracker
+ ┣ 📂 api                      # Vercel Serverless Functions
+ ┃ ┣ 📂 utils                  # Backend helpers & database logic
+ ┃ ┃ ┣ 📜 helpers.js           # Shared calculation helpers
+ ┃ ┃ ┣ 📜 storage.js           # MongoDB connection & schemas
+ ┃ ┃ ┗ 📜 validation.js        # Input validation logic
+ ┃ ┗ 📜 expenses.js            # Main Serverless API endpoints
+ ┣ 📂 frontend                 # React Frontend Application
+ ┃ ┣ 📂 public
+ ┃ ┣ 📂 src
+ ┃ ┃ ┣ 📂 components           # Lucide-React & Framer Motion Components
+ ┃ ┃ ┃ ┣ 📂 dashboard          # Modular UI: BalanceCards, Sidebar
+ ┃ ┃ ┃ ┣ 📜 ExpenseForm.js     # Floating animated form
+ ┃ ┃ ┃ ┣ 📜 ExpenseList.js     # Animated list with category colors
+ ┃ ┃ ┃ ┗ 📜 FilterSortBar.js
+ ┃ ┃ ┣ 📂 context              # Global State
+ ┃ ┃ ┃ ┗ 📜 AuthContext.js     # Context API for auth bridging
+ ┃ ┃ ┣ 📂 pages                
+ ┃ ┃ ┃ ┣ 📜 Login.js           # Premium animated login
+ ┃ ┃ ┃ ┣ 📜 Signup.js          # Premium animated signup
+ ┃ ┃ ┃ ┗ 📜 Dashboard.js       # Main authenticated route
+ ┃ ┃ ┣ 📜 api.js               # Global Axios config and interceptors
+ ┃ ┃ ┣ 📜 App.js               # Router logic
+ ┃ ┃ ┣ 📜 index.js
+ ┃ ┃ ┗ 📜 index.css            # Tailwind directives & Glass CSS
+ ┃ ┣ 📜 package.json
+ ┃ ┗ 📜 tailwind.config.js     # Deep custom theme configuration
+ ┣ 📜 vercel.json              # Vercel API routing parameters
+ ┗ 📜 README.md
+```
 
 ---
 
-## 📚 Future Improvements
+## 🚀 Quick Setup & Deployment
 
-- [ ] Email verification
-- [ ] Password reset
-- [ ] Export to CSV/PDF
-- [ ] Recurring expenses
-- [ ] Budget goals
-- [ ] Advanced charts
-- [ ] Multi-currency
-- [ ] Mobile app
-- [ ] Dark mode
-- [ ] Unit tests
+### Local Development
 
----
+1. **Install Frontend Dependencies:**
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-## 🤝 Contributing
+2. **Environment Variables:**
+   Create a `.env` file in the root if running the backend locally, or rely on Vercel CLI:
+   ```env
+   MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/vault
+   JWT_SECRET=your_super_secret_key
+   ```
 
-Contributions welcome! Please submit a Pull Request.
+3. **Run App:**
+   Start the React app (Expects backend running or pointing to remote Vercel API via `REACT_APP_API_URL`):
+   ```bash
+   npm start
+   ```
 
----
+### Vercel Deployment
 
-## 📝 License
+This project is built explicitly for Vercel Serverless architecture.
 
-ISC License
-
----
-
-## ⚡ Performance
-
-- JWT tokens cached in localStorage
-- Axios retry logic for transient failures
-- MongoDB indexes for fast queries
-- React 18 concurrent features
-- Tailwind CSS for fast rendering
+1. **Push to GitHub / GitLab**.
+2. **Connect Repository to Vercel**.
+3. Vercel will automatically detect `frontend` React app and root `api/` endpoints based on `vercel.json`.
+4. Add Environment Variables (`MONGODB_URI`, `JWT_SECRET`) in Vercel Dashboard.
+5. Deploy.
 
 ---
 
-## 🐛 Troubleshooting
+## 💻 Tech Stack
 
-### MongoDB Connection Failed
-- Verify MongoDB URI in `.env`
-- Check IP whitelist on MongoDB Atlas
-- Confirm database user permissions
-
-### JWT Token Invalid
-- Check `JWT_SECRET` matches on backend/frontend
-- Verify token not expired (30 days)
-- Ensure `Bearer ` prefix in Authorization header
-
-### CORS Errors
-- Verify `FRONTEND_URL` in backend `.env`
-- Check `REACT_APP_API_URL` in frontend `.env`
-- Ensure exact domain match
+- **Frontend**: React 18, React Router DOM v6
+- **Styling**: Tailwind CSS v3, Framer Motion, Lucide React Icons
+- **HTTP/Networking**: Axios with centralized interceptors
+- **Backend / API**: Vercel Serverless Functions (`api/*` routing)
+- **Database**: MongoDB Atlas via native MongoDB driver integration
+- **Security**: JWT tokens, bcrypt hashed passwords in Mongo mapping
 
 ---
 
-**Happy tracking! 🎯**
+## 🔐 Security & Best Practices
+
+- Token storage uses secure API interceptors pointing to Authorization Headers.
+- Vercel handles SSL/TLS routing out of the box.
+- MongoDB Atlas clustered with Network Access limited limits.
+- UI features completely stateless functional implementations decoupled from data logic.
