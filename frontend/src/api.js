@@ -6,12 +6,8 @@ import getApiUrl from './utils/apiUrl';
  */
 const API_URL = getApiUrl();
 
-if (!API_URL && process.env.NODE_ENV === 'production') {
-  console.error('REACT_APP_API_URL is not configured. API requests are disabled until the backend URL is set.');
-}
-
 const api = axios.create({
-  baseURL: API_URL || 'http://localhost:5000/api',
+  baseURL: API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -55,8 +51,8 @@ const retryRequest = async (fn, maxRetries = 3, delayMs = 1000) => {
 };
 
 const ensureApiUrl = () => {
-  if (!API_URL && process.env.NODE_ENV === 'production') {
-    throw new Error('REACT_APP_API_URL is not configured for production. Set it in Vercel environment variables.');
+  if (!API_URL) {
+    throw new Error('API URL could not be determined.');
   }
 };
 

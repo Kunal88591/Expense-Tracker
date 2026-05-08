@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const ensureApiUrl = () => {
     if (!API_URL && process.env.NODE_ENV === 'production') {
-      throw new Error('REACT_APP_API_URL is not configured for production. Set it in Vercel environment variables.');
+      
     }
   };
 
