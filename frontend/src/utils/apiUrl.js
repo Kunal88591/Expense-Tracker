@@ -9,7 +9,10 @@ const getApiUrl = () => {
     return 'http://localhost:5000/api';
   }
 
-  console.error('REACT_APP_API_URL is not set. Configure it in Vercel environment variables.');
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return `${window.location.origin}/api`;
+  }
+
   return '/api';
 };
 
