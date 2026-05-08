@@ -1,39 +1,27 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-
-let memoryServer;
 
 const connectDB = async () => {
   try {
     const mongoUri = process.env.MONGODB_URI;
-    let connectionUri = mongoUri;
-    const isProduction = process.env.NODE_ENV === 'production';
 
-    if (!mongoUri && isProduction) {
-      throw new Error('MONGODB_URI is required in production');
+    if (!mongoUri) {
+      console.error('MONGODB_URI is totally missing. You must add it to your environment variables.');
+      throw new Error('MONGODB_URI is required to connect to MongoDB Atlas');
     }
 
-    if (!mongoUri && !isProduction) {
-      // Local-dev fallback so the API can run even if Atlas credentials are not configured yet.
-      memoryServer = await MongoMemoryServer.create();
-      connectionUri = memoryServer.getUri();
-      console.warn('MONGODB_URI not set. Using in-memory MongoDB for local development.');
-    }
-
-    const conn = await mongoose.connect(connectionUri);
+    // Connect to MongoDB Atlas
+    const conn = await mongoose.connect(mongoUri);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
     return conn;
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit(1);
+    console.error(`Error connecting to MongoDB: ${error.message}`);
+    // Re-throw so the server knows it failed
+    throw error;
   }
 };
 
 export const closeDB = async () => {
   await mongoose.connection.close();
-  if (memoryServer) {
-    await memoryServer.stop();
-  }
 };
 
 export default connectDB;
