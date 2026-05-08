@@ -50,3 +50,32 @@ code {
     @apply text-green-600 text-sm mt-1;
   }
 }
+
+@layer base {
+  body {
+    @apply bg-background text-textPrimary antialiased font-sans;
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(91, 140, 255, 0.05), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(155, 109, 255, 0.05), transparent 25%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card backdrop-blur-glass border border-white/10 shadow-2xl rounded-3xl relative overflow-hidden;
+  }
+  .glass-card::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300 bg-gradient-to-br from-white/5 to-transparent pointer-events-none;
+  }
+  .glass-card:hover::before {
+    @apply opacity-100;
+  }
+  .futuristic-input {
+    @apply w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-all;
+  }
+  .futuristic-btn {
+    @apply w-full bg-gradient-to-r from-accent-blue to-accent-purple text-white rounded-full py-3 font-semibold shadow-lg hover:shadow-accent-purple/20 transition-all hover:scale-[1.02] active:scale-[0.98];
+  }
+}

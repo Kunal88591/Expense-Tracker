@@ -1,163 +1,109 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Plus, CreditCard, Tag, Calendar, FileText } from 'lucide-react';
 
-function ExpenseForm({ onAddExpense, categories }) {
+export default function ExpenseForm({ onAddExpense, categories }) {
   const [formData, setFormData] = useState({
     amount: '',
-    category: '',
+    category: categories[0] || 'Other',
     description: '',
     date: new Date().toISOString().split('T')[0]
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState({});
-
-  const validateForm = () => {
-    const errors = {};
-
-    if (!formData.amount || isNaN(parseFloat(formData.amount)) || parseFloat(formData.amount) <= 0) {
-      errors.amount = 'Amount must be a positive number';
-    }
-    if (!formData.category || formData.category.trim() === '') {
-      errors.category = 'Please select a category';
-    }
-    if (!formData.description || formData.description.trim() === '') {
-      errors.description = 'Description is required';
-    }
-    if (!formData.date || !/^\d{4}-\d{2}-\d{2}$/.test(formData.date)) {
-      errors.date = 'Please select a valid date';
-    }
-
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (fieldErrors[name]) {
-      setFieldErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
     setIsSubmitting(true);
-    try {
-      await onAddExpense({
-        ...formData,
-        amount: parseFloat(formData.amount)
-      });
-
-      setFormData({
-        amount: '',
-        category: '',
-        description: '',
-        date: new Date().toISOString().split('T')[0]
-      });
-      setFieldErrors({});
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    await onAddExpense(formData);
+    setFormData({ ...formData, amount: '', description: '' }); // Reset fields
+    setIsSubmitting(false);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
-            Amount (₹) *
-          </label>
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="glass-card p-6 w-full lg:w-96"
+    >
+      <h2 className="text-xl font-bold tracking-tight text-white mb-6">Quick Add</h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-textSecondary">
+            ₹
+          </div>
           <input
             type="number"
-            id="amount"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            placeholder="0.00"
+            required
+            min="0.01"
             step="0.01"
-            min="0"
-            disabled={isSubmitting}
-            className={`input-field ${fieldErrors.amount ? 'border-red-500' : ''}`}
+            value={formData.amount}
+            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+            className="futuristic-input pl-8 text-2xl font-bold"
+            placeholder="0.00"
           />
-          {fieldErrors.amount && <span className="error-message">{fieldErrors.amount}</span>}
         </div>
 
-        <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-            Category *
-          </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-textSecondary">
+            <Tag className="w-4 h-4" />
+          </div>
           <select
-            id="category"
-            name="category"
             value={formData.category}
-            onChange={handleChange}
-            disabled={isSubmitting}
-            className={`input-field ${fieldErrors.category ? 'border-red-500' : ''}`}
+            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            className="futuristic-input pl-12 appearance-none bg-surface"
           >
-            <option value="">Select a category</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
+            {categories.map((c) => (
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
-          {fieldErrors.category && <span className="error-message">{fieldErrors.category}</span>}
         </div>
 
-        <div className="md:col-span-2">
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-            Description *
-          </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-textSecondary">
+            <FileText className="w-4 h-4" />
+          </div>
           <input
             type="text"
-            id="description"
-            name="description"
+            required
+            maxLength={100}
             value={formData.description}
-            onChange={handleChange}
-            placeholder="What did you spend on?"
-            disabled={isSubmitting}
-            className={`input-field ${fieldErrors.description ? 'border-red-500' : ''}`}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            className="futuristic-input pl-12"
+            placeholder="What was this for?"
           />
-          {fieldErrors.description && <span className="error-message">{fieldErrors.description}</span>}
         </div>
 
-        <div>
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
-            Date *
-          </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-textSecondary">
+            <Calendar className="w-4 h-4" />
+          </div>
           <input
             type="date"
-            id="date"
-            name="date"
+            required
             value={formData.date}
-            onChange={handleChange}
-            disabled={isSubmitting}
-            className={`input-field ${fieldErrors.date ? 'border-red-500' : ''}`}
+            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            className="futuristic-input pl-12 bg-transparent [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert"
           />
-          {fieldErrors.date && <span className="error-message">{fieldErrors.date}</span>}
         </div>
-      </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className={`btn-primary w-full md:w-auto ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-      >
-        {isSubmitting ? 'Adding...' : 'Add Expense'}
-      </button>
-    </form>
+        <button 
+          type="submit" 
+          disabled={isSubmitting}
+          className="futuristic-btn flex items-center justify-center gap-2 mt-6"
+        >
+          {isSubmitting ? (
+            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}>
+              <CreditCard className="w-5 h-5" />
+            </motion.div>
+          ) : (
+            <>
+              <Plus className="w-5 h-5" />
+              Add Expense
+            </>
+          )}
+        </button>
+      </form>
+    </motion.div>
   );
 }
-
-export default ExpenseForm;
-
