@@ -14,6 +14,20 @@ const api = axios.create({
   }
 });
 
+// Add a request interceptor to attach the auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 /**
  * UUID v4 generator
  * Used for idempotency keys to prevent duplicate expense creation
