@@ -1,18 +1,13 @@
 import axios from 'axios';
+import getApiUrl from './utils/apiUrl';
 
 /**
  * API service for backend server
  */
-const API_URL = process.env.REACT_APP_API_URL || (
-  process.env.NODE_ENV === 'development' ? 'http://localhost:5000/api' : ''
-);
-
-if (!API_URL && process.env.NODE_ENV === 'production') {
-  console.error('⚠️ REACT_APP_API_URL is not set. Set it in Vercel environment variables.');
-}
+const API_URL = getApiUrl();
 
 const api = axios.create({
-  baseURL: API_URL || 'http://localhost:5000/api',
+  baseURL: API_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

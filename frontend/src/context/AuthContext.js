@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import getApiUrl from '../utils/apiUrl';
 
 const AuthContext = createContext();
 
@@ -17,13 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_URL = process.env.REACT_APP_API_URL || (
-    process.env.NODE_ENV === 'development' ? 'http://localhost:5000/api' : 'http://localhost:5000/api'
-  );
-
-  if (!API_URL && process.env.NODE_ENV === 'production') {
-    console.error('⚠️ REACT_APP_API_URL is not set. Set it in Vercel environment variables.');
-  }
+  const API_URL = getApiUrl();
 
   // Check if user is logged in on mount
   useEffect(() => {
